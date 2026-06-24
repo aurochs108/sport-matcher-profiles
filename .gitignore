@@ -1,0 +1,25 @@
+# Gradle
+.gradle/
+build/
+out/
+
+# Kotlin
+*.class
+*.kotlin_module
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Spring Boot / local configuration
+application-local.yml
+application-local.yaml
+.env
+.env.*
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
