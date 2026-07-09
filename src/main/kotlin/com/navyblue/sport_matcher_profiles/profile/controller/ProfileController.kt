@@ -3,6 +3,7 @@ package com.navyblue.sport_matcher_profiles.profile.controller
 import com.navyblue.sport_matcher_profiles.profile.dto.CreateProfileRequest
 import com.navyblue.sport_matcher_profiles.profile.dto.ProfileResponse
 import com.navyblue.sport_matcher_profiles.profile.service.ProfileService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -17,7 +18,7 @@ class ProfileController(
 ) {
 
 	@PostMapping
-	fun createProfile(@RequestBody request: CreateProfileRequest): ResponseEntity<ProfileResponse> {
+	fun createProfile(@Valid @RequestBody request: CreateProfileRequest): ResponseEntity<ProfileResponse> {
 		val profile = profileService.createProfile(request)
 
 		return ResponseEntity

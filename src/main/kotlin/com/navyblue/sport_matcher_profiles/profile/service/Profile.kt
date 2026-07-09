@@ -5,6 +5,6 @@ import java.util.UUID
 data class Profile(
 	val id: UUID,
 	val name: String,
-	val favoriteSports: List<FavoriteSport>,
+	val favoriteSports: List<String>,
 	val profileImageUrl: String?,
 )

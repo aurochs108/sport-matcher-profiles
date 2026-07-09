@@ -2,9 +2,7 @@ package com.navyblue.sport_matcher_profiles.profile.service
 
 import com.navyblue.sport_matcher_profiles.profile.dto.CreateProfileRequest
 import com.navyblue.sport_matcher_profiles.profile.dto.ProfileResponse
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import org.springframework.web.server.ResponseStatusException
 import java.util.UUID
 
 @Service
@@ -13,25 +11,20 @@ class ProfileService(
 ) {
 
 	fun createProfile(request: CreateProfileRequest): ProfileResponse {
-		val name = request.name?.trim()
-		if (name.isNullOrEmpty()) {
-			throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Profile name is required")
-		}
+		val name = request.name.trim()
 
 		val favoriteSports = request.favoriteSports
-			.map { FavoriteSport.fromLabel(it) }
+			.map { it.trim() }
 			.distinct()
 
-		if (favoriteSports.isEmpty()) {
-			throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Select at least one favorite sport")
-		}
+		val profileImageUrl = request.profileImageUrl.trim()
 
 		return profileRepository.save(
 			Profile(
 				id = UUID.randomUUID(),
 				name = name,
 				favoriteSports = favoriteSports,
-				profileImageUrl = request.profileImageUrl?.trim()?.takeIf { it.isNotEmpty() },
+				profileImageUrl = profileImageUrl,
 			),
 		).toResponse()
 	}
@@ -40,6 +33,6 @@ class ProfileService(
 private fun Profile.toResponse() = ProfileResponse(
 	id = id,
 	name = name,
-	favoriteSports = favoriteSports.map { it.label },
+	favoriteSports = favoriteSports,
 	profileImageUrl = profileImageUrl,
 )
