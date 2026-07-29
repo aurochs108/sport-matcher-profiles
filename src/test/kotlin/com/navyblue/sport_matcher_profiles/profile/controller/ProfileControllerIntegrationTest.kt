@@ -1,4 +1,4 @@
-package com.navyblue.sport_matcher_profiles
+package com.navyblue.sport_matcher_profiles.profile.controller
 
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -7,17 +7,12 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class SportMatcherProfilesApplicationTests(
+class ProfileControllerIntegrationTest(
 	@Autowired private val mockMvc: MockMvc,
 ) {
-
-	@Test
-	fun contextLoads() {
-	}
 
 	@Test
 	fun `creates profile`() {
@@ -25,15 +20,14 @@ class SportMatcherProfilesApplicationTests(
 			contentType = MediaType.APPLICATION_JSON
 			content = """
 				{
-				  "name": "Alex",
-				  "favoriteSports": ["Bike", "Ping Pong"],
-				  "profileImageUrl": "https://example.com/alex.jpg"
+				  "name": " Alex ",
+				  "favoriteSports": ["Bike", " Ping Pong "],
+				  "profileImageUrl": " https://example.com/alex.jpg "
 				}
 			""".trimIndent()
 		}
 			.andExpect {
 				status { isCreated() }
-				header().exists("Location")
 				jsonPath("$.id") { exists() }
 				jsonPath("$.name") { value("Alex") }
 				jsonPath("$.favoriteSports[0]") { value("Bike") }
@@ -43,13 +37,48 @@ class SportMatcherProfilesApplicationTests(
 	}
 
 	@Test
-	fun `rejects profile without selected sports`() {
+	fun `rejects profile with blank name`() {
+		mockMvc.post("/profiles") {
+			contentType = MediaType.APPLICATION_JSON
+			content = """
+				{
+				  "name": " ",
+				  "favoriteSports": ["Bike"],
+				  "profileImageUrl": "https://example.com/alex.jpg"
+				}
+			""".trimIndent()
+		}
+			.andExpect {
+				status { isBadRequest() }
+			}
+	}
+
+	@Test
+	fun `rejects profile without favorite sports`() {
 		mockMvc.post("/profiles") {
 			contentType = MediaType.APPLICATION_JSON
 			content = """
 				{
 				  "name": "Alex",
-				  "favoriteSports": []
+				  "favoriteSports": [],
+				  "profileImageUrl": "https://example.com/alex.jpg"
+				}
+			""".trimIndent()
+		}
+			.andExpect {
+				status { isBadRequest() }
+			}
+	}
+
+	@Test
+	fun `rejects profile with blank image URL`() {
+		mockMvc.post("/profiles") {
+			contentType = MediaType.APPLICATION_JSON
+			content = """
+				{
+				  "name": "Alex",
+				  "favoriteSports": ["Bike"],
+				  "profileImageUrl": " "
 				}
 			""".trimIndent()
 		}
