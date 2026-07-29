@@ -1,6 +1,3 @@
 spring:
   application:
     name: sport-matcher-profiles
-
-server:
-  port: ${SERVER_PORT:8081}
