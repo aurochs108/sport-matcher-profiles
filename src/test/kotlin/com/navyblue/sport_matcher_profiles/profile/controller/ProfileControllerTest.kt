@@ -4,6 +4,7 @@ import com.navyblue.sport_matcher_profiles.profile.dto.CreateProfileRequest
 import com.navyblue.sport_matcher_profiles.profile.dto.ProfileResponse
 import com.navyblue.sport_matcher_profiles.profile.entity.FavoriteSport
 import com.navyblue.sport_matcher_profiles.profile.service.ProfileService
+import org.hamcrest.Matchers.containsInAnyOrder
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.never
@@ -31,7 +32,7 @@ class ProfileControllerTest {
 			ProfileResponse(
 				id = UUID.randomUUID(),
 				name = "Alex",
-				favoriteSports = listOf(FavoriteSport.BIKE, FavoriteSport.PING_PONG),
+				favoriteSports = setOf(FavoriteSport.BIKE, FavoriteSport.PING_PONG),
 				profileImageUrl = "https://example.com/alex.jpg",
 			),
 		)
@@ -50,15 +51,14 @@ class ProfileControllerTest {
 				status { isCreated() }
 				jsonPath("$.id") { exists() }
 				jsonPath("$.name") { value("Alex") }
-				jsonPath("$.favoriteSports[0]") { value("Bike") }
-				jsonPath("$.favoriteSports[1]") { value("Ping Pong") }
+				jsonPath("$.favoriteSports") { value(containsInAnyOrder("Bike", "Ping Pong")) }
 				jsonPath("$.profileImageUrl") { value("https://example.com/alex.jpg") }
 			}
 
 		verify(profileService).createProfile(
 			CreateProfileRequest(
 				name = "Alex",
-				favoriteSports = listOf(FavoriteSport.BIKE, FavoriteSport.PING_PONG),
+				favoriteSports = setOf(FavoriteSport.BIKE, FavoriteSport.PING_PONG),
 				profileImageUrl = "https://example.com/alex.jpg",
 			),
 		)

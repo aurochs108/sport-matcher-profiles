@@ -22,7 +22,7 @@ class ProfileRepositoryTest(
 		// given
 		val profile = Profile(
 			name = "Alex",
-			favoriteSports = listOf(FavoriteSport.BIKE, FavoriteSport.PING_PONG),
+			favoriteSports = setOf(FavoriteSport.BIKE, FavoriteSport.PING_PONG),
 			profileImageUrl = "https://example.com/alex.jpg",
 		)
 
@@ -35,7 +35,7 @@ class ProfileRepositoryTest(
 		assertThat(savedProfile.id).isEqualTo(profile.id)
 		assertThat(savedProfile.name).isEqualTo("Alex")
 		assertThat(savedProfile.favoriteSports)
-			.containsExactly(FavoriteSport.BIKE, FavoriteSport.PING_PONG)
+			.containsExactlyInAnyOrder(FavoriteSport.BIKE, FavoriteSport.PING_PONG)
 		assertThat(savedProfile.profileImageUrl).isEqualTo("https://example.com/alex.jpg")
 	}
 }

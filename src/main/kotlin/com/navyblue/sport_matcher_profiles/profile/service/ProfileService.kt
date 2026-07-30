@@ -15,14 +15,11 @@ class ProfileService(
 	fun createProfile(request: CreateProfileRequest): ProfileResponse {
 		val name = request.name.trim()
 
-		val favoriteSports = request.favoriteSports
-			.distinct()
-
 		return profileRepository.save(
 			Profile(
 				id = UUID.randomUUID(),
 				name = name,
-				favoriteSports = favoriteSports,
+				favoriteSports = request.favoriteSports,
 				profileImageUrl = request.profileImageUrl,
 			),
 		).toResponse()

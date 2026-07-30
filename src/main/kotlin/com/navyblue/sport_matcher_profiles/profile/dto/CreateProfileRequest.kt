@@ -9,7 +9,7 @@ data class CreateProfileRequest(
 	val name: String,
 
 	@field:NotEmpty(message = "Select at least one favorite sport")
-	val favoriteSports: List<FavoriteSport>,
+	val favoriteSports: Set<FavoriteSport>,
 
 	@field:NotBlank(message = "Profile image URL is required")
 	val profileImageUrl: String,

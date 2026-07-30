@@ -17,12 +17,11 @@ class ProfileServiceTest {
 	private val service = ProfileService(profileRepository)
 
 	@Test
-	fun `createProfile normalizes name removes duplicate sports saves profile and returns response`() {
+	fun `createProfile normalizes name saves profile and returns response`() {
 		// given
 		val request = CreateProfileRequest(
 			name = " Alex ",
-			favoriteSports = listOf(
-				FavoriteSport.BIKE,
+			favoriteSports = setOf(
 				FavoriteSport.BIKE,
 				FavoriteSport.PING_PONG,
 			),
@@ -38,7 +37,8 @@ class ProfileServiceTest {
 		verify(profileRepository).save(profileCaptor.capture())
 		val savedProfile = profileCaptor.firstValue
 		assertThat(savedProfile.name).isEqualTo("Alex")
-		assertThat(savedProfile.favoriteSports).containsExactly(FavoriteSport.BIKE, FavoriteSport.PING_PONG)
+		assertThat(savedProfile.favoriteSports)
+			.containsExactlyInAnyOrder(FavoriteSport.BIKE, FavoriteSport.PING_PONG)
 		assertThat(savedProfile.profileImageUrl).isEqualTo("https://example.com/alex.jpg")
 		assertThat(response.id).isEqualTo(savedProfile.id)
 		assertThat(response.name).isEqualTo(savedProfile.name)

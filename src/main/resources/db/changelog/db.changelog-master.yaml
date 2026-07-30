@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
       file: db/changelog/changes/001-2026-07-30-223325-init-profile-schema.sql
+  - include:
+      file: db/changelog/changes/002-2026-07-30-224309-remove-favorite-sport-position.sql

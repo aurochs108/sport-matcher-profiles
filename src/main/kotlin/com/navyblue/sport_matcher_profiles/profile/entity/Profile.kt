@@ -9,7 +9,6 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
-import jakarta.persistence.OrderColumn
 import jakarta.persistence.Table
 import java.util.UUID
 
@@ -27,8 +26,7 @@ class Profile(
 	)
 	@Enumerated(EnumType.STRING)
 	@Column(name = "favorite_sport", nullable = false)
-	@OrderColumn(name = "position", nullable = false)
-	val favoriteSports: List<FavoriteSport>,
+	val favoriteSports: Set<FavoriteSport>,
 	@Column(name = "profile_image_url", nullable = false)
 	val profileImageUrl: String,
 )

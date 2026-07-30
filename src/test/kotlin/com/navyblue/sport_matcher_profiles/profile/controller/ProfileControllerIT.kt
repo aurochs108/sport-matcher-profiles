@@ -1,6 +1,7 @@
 package com.navyblue.sport_matcher_profiles.profile.controller
 
 import com.navyblue.sport_matcher_profiles.infrastructure.PostgresContainerSupport
+import org.hamcrest.Matchers.containsInAnyOrder
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -31,8 +32,7 @@ class ProfileControllerIT(
 				status { isCreated() }
 				jsonPath("$.id") { exists() }
 				jsonPath("$.name") { value("Alex") }
-				jsonPath("$.favoriteSports[0]") { value("Bike") }
-				jsonPath("$.favoriteSports[1]") { value("Ping Pong") }
+				jsonPath("$.favoriteSports") { value(containsInAnyOrder("Bike", "Ping Pong")) }
 				jsonPath("$.profileImageUrl") { value("https://example.com/alex.jpg") }
 			}
 	}
