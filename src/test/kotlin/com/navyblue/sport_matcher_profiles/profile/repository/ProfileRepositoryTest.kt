@@ -1,28 +1,41 @@
 package com.navyblue.sport_matcher_profiles.profile.repository
 
+import com.navyblue.sport_matcher_profiles.infrastructure.PostgresContainerSupport
 import com.navyblue.sport_matcher_profiles.profile.entity.FavoriteSport
 import com.navyblue.sport_matcher_profiles.profile.entity.Profile
+import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.util.UUID
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.transaction.annotation.Transactional
 
-class ProfileRepositoryTest {
-	private val repository = ProfileRepository()
+@SpringBootTest
+class ProfileRepositoryTest(
+	@Autowired private val repository: ProfileRepository,
+	@Autowired private val entityManager: EntityManager,
+) : PostgresContainerSupport() {
 
 	@Test
-	fun `saves and returns profile`() {
+	@Transactional
+	fun `persists and loads profile`() {
 		// given
 		val profile = Profile(
-			id = UUID.randomUUID(),
 			name = "Alex",
-			favoriteSports = listOf(FavoriteSport.BIKE),
+			favoriteSports = listOf(FavoriteSport.BIKE, FavoriteSport.PING_PONG),
 			profileImageUrl = "https://example.com/alex.jpg",
 		)
 
 		// when
-		val savedProfile = repository.save(profile)
+		repository.saveAndFlush(profile)
+		entityManager.clear()
+		val savedProfile = repository.findById(profile.id).orElseThrow()
 
 		// then
-		assertThat(savedProfile).isSameAs(profile)
+		assertThat(savedProfile.id).isEqualTo(profile.id)
+		assertThat(savedProfile.name).isEqualTo("Alex")
+		assertThat(savedProfile.favoriteSports)
+			.containsExactly(FavoriteSport.BIKE, FavoriteSport.PING_PONG)
+		assertThat(savedProfile.profileImageUrl).isEqualTo("https://example.com/alex.jpg")
 	}
 }

@@ -28,7 +28,7 @@ class ProfileServiceTest {
 			),
 			profileImageUrl = "https://example.com/alex.jpg",
 		)
-		whenever(profileRepository.save(any())).thenAnswer { invocation -> invocation.getArgument(0) }
+		whenever(profileRepository.save(any<Profile>())).thenAnswer { invocation -> invocation.getArgument(0) }
 
 		// when
 		val response = service.createProfile(request)

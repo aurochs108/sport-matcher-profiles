@@ -1,5 +1,6 @@
 package com.navyblue.sport_matcher_profiles.profile.controller
 
+import com.navyblue.sport_matcher_profiles.infrastructure.PostgresContainerSupport
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -12,7 +13,7 @@ import org.springframework.test.web.servlet.post
 @AutoConfigureMockMvc
 class ProfileControllerIT(
 	@Autowired private val mockMvc: MockMvc,
-) {
+) : PostgresContainerSupport() {
 
 	@Test
 	fun `createProfile returns HTTP 201 with normalized persisted profile`() {
