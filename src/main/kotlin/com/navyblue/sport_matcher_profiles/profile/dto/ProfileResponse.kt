@@ -6,5 +6,5 @@ data class ProfileResponse(
 	val id: UUID,
 	val name: String,
 	val favoriteSports: List<String>,
-	val profileImageUrl: String?,
+	val profileImageUrl: String,
 )
