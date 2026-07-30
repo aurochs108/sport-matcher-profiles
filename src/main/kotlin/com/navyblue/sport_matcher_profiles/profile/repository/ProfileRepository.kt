@@ -1,5 +1,6 @@
-package com.navyblue.sport_matcher_profiles.profile.service
+package com.navyblue.sport_matcher_profiles.profile.repository
 
+import com.navyblue.sport_matcher_profiles.profile.entity.Profile
 import org.springframework.stereotype.Repository
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap

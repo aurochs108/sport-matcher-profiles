@@ -1,4 +1,4 @@
-package com.navyblue.sport_matcher_profiles.profile.service
+package com.navyblue.sport_matcher_profiles.profile.entity
 
 enum class FavoriteSport(
 	val label: String,

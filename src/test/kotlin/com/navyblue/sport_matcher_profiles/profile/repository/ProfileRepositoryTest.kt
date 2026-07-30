@@ -1,5 +1,6 @@
-package com.navyblue.sport_matcher_profiles.profile.service
+package com.navyblue.sport_matcher_profiles.profile.repository
 
+import com.navyblue.sport_matcher_profiles.profile.entity.Profile
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.UUID

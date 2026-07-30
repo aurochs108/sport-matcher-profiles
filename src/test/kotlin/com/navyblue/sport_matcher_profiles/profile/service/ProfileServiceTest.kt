@@ -1,6 +1,8 @@
 package com.navyblue.sport_matcher_profiles.profile.service
 
 import com.navyblue.sport_matcher_profiles.profile.dto.CreateProfileRequest
+import com.navyblue.sport_matcher_profiles.profile.entity.Profile
+import com.navyblue.sport_matcher_profiles.profile.repository.ProfileRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
