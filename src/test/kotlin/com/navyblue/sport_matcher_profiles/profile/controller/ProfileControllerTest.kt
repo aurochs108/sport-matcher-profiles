@@ -2,6 +2,7 @@ package com.navyblue.sport_matcher_profiles.profile.controller
 
 import com.navyblue.sport_matcher_profiles.profile.dto.CreateProfileRequest
 import com.navyblue.sport_matcher_profiles.profile.dto.ProfileResponse
+import com.navyblue.sport_matcher_profiles.profile.entity.FavoriteSport
 import com.navyblue.sport_matcher_profiles.profile.service.ProfileService
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
@@ -30,7 +31,7 @@ class ProfileControllerTest {
 			ProfileResponse(
 				id = UUID.randomUUID(),
 				name = "Alex",
-				favoriteSports = listOf("Bike", "Ping Pong"),
+				favoriteSports = listOf(FavoriteSport.BIKE, FavoriteSport.PING_PONG),
 				profileImageUrl = "https://example.com/alex.jpg",
 			),
 		)
@@ -57,10 +58,29 @@ class ProfileControllerTest {
 		verify(profileService).createProfile(
 			CreateProfileRequest(
 				name = "Alex",
-				favoriteSports = listOf("Bike", "Ping Pong"),
+				favoriteSports = listOf(FavoriteSport.BIKE, FavoriteSport.PING_PONG),
 				profileImageUrl = "https://example.com/alex.jpg",
 			),
 		)
+	}
+
+	@Test
+	fun `createProfile returns HTTP 400 when favorite sport is unknown`() {
+		mockMvc
+			.post("/profiles") {
+				contentType = MediaType.APPLICATION_JSON
+				content = """
+					{
+					  "name": "Alex",
+					  "favoriteSports": ["Chess"],
+					  "profileImageUrl": "https://example.com/alex.jpg"
+					}
+				""".trimIndent()
+			}.andExpect {
+				status { isBadRequest() }
+			}
+
+		verify(profileService, never()).createProfile(any())
 	}
 
 	@Test

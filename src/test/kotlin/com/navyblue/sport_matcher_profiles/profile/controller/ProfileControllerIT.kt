@@ -37,6 +37,23 @@ class ProfileControllerIT(
 	}
 
 	@Test
+	fun `createProfile returns HTTP 400 when favorite sport is unknown`() {
+		mockMvc
+			.post("/profiles") {
+				contentType = MediaType.APPLICATION_JSON
+				content = """
+					{
+					  "name": "Alex",
+					  "favoriteSports": ["Chess"],
+					  "profileImageUrl": "https://example.com/alex.jpg"
+					}
+				""".trimIndent()
+			}.andExpect {
+				status { isBadRequest() }
+			}
+	}
+
+	@Test
 	fun `createProfile returns HTTP 400 when name is blank`() {
 		mockMvc
 			.post("/profiles") {

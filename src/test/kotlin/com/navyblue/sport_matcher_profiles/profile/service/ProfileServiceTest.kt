@@ -1,6 +1,7 @@
 package com.navyblue.sport_matcher_profiles.profile.service
 
 import com.navyblue.sport_matcher_profiles.profile.dto.CreateProfileRequest
+import com.navyblue.sport_matcher_profiles.profile.entity.FavoriteSport
 import com.navyblue.sport_matcher_profiles.profile.entity.Profile
 import com.navyblue.sport_matcher_profiles.profile.repository.ProfileRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -20,7 +21,11 @@ class ProfileServiceTest {
 		// given
 		val request = CreateProfileRequest(
 			name = " Alex ",
-			favoriteSports = listOf("Bike", "Bike", "Ping Pong"),
+			favoriteSports = listOf(
+				FavoriteSport.BIKE,
+				FavoriteSport.BIKE,
+				FavoriteSport.PING_PONG,
+			),
 			profileImageUrl = "https://example.com/alex.jpg",
 		)
 		whenever(profileRepository.save(any())).thenAnswer { invocation -> invocation.getArgument(0) }
@@ -33,7 +38,7 @@ class ProfileServiceTest {
 		verify(profileRepository).save(profileCaptor.capture())
 		val savedProfile = profileCaptor.firstValue
 		assertThat(savedProfile.name).isEqualTo("Alex")
-		assertThat(savedProfile.favoriteSports).containsExactly("Bike", "Ping Pong")
+		assertThat(savedProfile.favoriteSports).containsExactly(FavoriteSport.BIKE, FavoriteSport.PING_PONG)
 		assertThat(savedProfile.profileImageUrl).isEqualTo("https://example.com/alex.jpg")
 		assertThat(response.id).isEqualTo(savedProfile.id)
 		assertThat(response.name).isEqualTo(savedProfile.name)

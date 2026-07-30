@@ -1,5 +1,6 @@
 package com.navyblue.sport_matcher_profiles.profile.repository
 
+import com.navyblue.sport_matcher_profiles.profile.entity.FavoriteSport
 import com.navyblue.sport_matcher_profiles.profile.entity.Profile
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -14,7 +15,7 @@ class ProfileRepositoryTest {
 		val profile = Profile(
 			id = UUID.randomUUID(),
 			name = "Alex",
-			favoriteSports = listOf("Bike"),
+			favoriteSports = listOf(FavoriteSport.BIKE),
 			profileImageUrl = "https://example.com/alex.jpg",
 		)
 
