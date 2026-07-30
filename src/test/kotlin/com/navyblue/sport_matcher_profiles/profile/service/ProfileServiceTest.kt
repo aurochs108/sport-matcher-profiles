@@ -14,12 +14,12 @@ class ProfileServiceTest {
 	private val service = ProfileService(profileRepository)
 
 	@Test
-	fun `createProfile normalizes request saves profile and returns response`() {
+	fun `createProfile normalizes name removes duplicate sports saves profile and returns response`() {
 		// given
 		val request = CreateProfileRequest(
 			name = " Alex ",
-			favoriteSports = listOf("Bike", " Bike ", " Ping Pong "),
-			profileImageUrl = " https://example.com/alex.jpg ",
+			favoriteSports = listOf("Bike", "Bike", "Ping Pong"),
+			profileImageUrl = "https://example.com/alex.jpg",
 		)
 		whenever(profileRepository.save(any())).thenAnswer { invocation -> invocation.getArgument(0) }
 

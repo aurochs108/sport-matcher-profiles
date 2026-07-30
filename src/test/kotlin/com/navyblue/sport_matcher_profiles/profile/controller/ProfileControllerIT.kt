@@ -22,8 +22,8 @@ class ProfileControllerIT(
 				content = """
 					{
 					  "name": " Alex ",
-					  "favoriteSports": ["Bike", " Ping Pong "],
-					  "profileImageUrl": " https://example.com/alex.jpg "
+					  "favoriteSports": ["Bike", "Ping Pong"],
+					  "profileImageUrl": "https://example.com/alex.jpg"
 					}
 				""".trimIndent()
 			}.andExpect {

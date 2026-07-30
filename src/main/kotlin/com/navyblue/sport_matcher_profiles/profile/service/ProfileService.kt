@@ -14,17 +14,14 @@ class ProfileService(
 		val name = request.name.trim()
 
 		val favoriteSports = request.favoriteSports
-			.map { it.trim() }
 			.distinct()
-
-		val profileImageUrl = request.profileImageUrl.trim()
 
 		return profileRepository.save(
 			Profile(
 				id = UUID.randomUUID(),
 				name = name,
 				favoriteSports = favoriteSports,
-				profileImageUrl = profileImageUrl,
+				profileImageUrl = request.profileImageUrl,
 			),
 		).toResponse()
 	}
