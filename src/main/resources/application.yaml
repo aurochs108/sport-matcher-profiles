@@ -1,3 +1,18 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: sport-matcher-profiles
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/sportmatcher_profiles}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
