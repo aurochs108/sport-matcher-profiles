@@ -1,6 +1,6 @@
 package com.navyblue.sport_matcher_profiles.profile.service
 
-import org.junit.jupiter.api.Assertions.assertSame
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
@@ -9,6 +9,7 @@ class ProfileRepositoryTest {
 
 	@Test
 	fun `saves and returns profile`() {
+		// given
 		val profile = Profile(
 			id = UUID.randomUUID(),
 			name = "Alex",
@@ -16,8 +17,10 @@ class ProfileRepositoryTest {
 			profileImageUrl = "https://example.com/alex.jpg",
 		)
 
+		// when
 		val savedProfile = repository.save(profile)
 
-		assertSame(profile, savedProfile)
+		// then
+		assertThat(savedProfile).isSameAs(profile)
 	}
 }

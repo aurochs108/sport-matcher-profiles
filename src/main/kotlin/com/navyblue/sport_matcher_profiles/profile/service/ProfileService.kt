@@ -30,9 +30,11 @@ class ProfileService(
 	}
 }
 
-private fun Profile.toResponse() = ProfileResponse(
-	id = id,
-	name = name,
-	favoriteSports = favoriteSports,
-	profileImageUrl = profileImageUrl,
-)
+private fun Profile.toResponse(): ProfileResponse {
+	return ProfileResponse(
+		id = id,
+		name = name,
+		favoriteSports = favoriteSports,
+		profileImageUrl = profileImageUrl,
+	)
+}

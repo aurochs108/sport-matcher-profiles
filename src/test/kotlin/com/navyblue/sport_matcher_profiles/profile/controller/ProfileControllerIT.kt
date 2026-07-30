@@ -1,48 +1,29 @@
 package com.navyblue.sport_matcher_profiles.profile.controller
 
-import com.navyblue.sport_matcher_profiles.profile.dto.CreateProfileRequest
-import com.navyblue.sport_matcher_profiles.profile.dto.ProfileResponse
-import com.navyblue.sport_matcher_profiles.profile.service.ProfileService
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.never
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.MediaType
-import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
-import java.util.UUID
 
-@WebMvcTest(ProfileController::class)
-class ProfileControllerTest {
-	@Autowired
-	lateinit var mockMvc: MockMvc
-
-	@MockitoBean
-	lateinit var profileService: ProfileService
+@SpringBootTest
+@AutoConfigureMockMvc
+class ProfileControllerIT(
+	@Autowired private val mockMvc: MockMvc,
+) {
 
 	@Test
-	fun `createProfile returns HTTP 201 with profile on successful creation`() {
-		whenever(profileService.createProfile(any())).thenReturn(
-			ProfileResponse(
-				id = UUID.randomUUID(),
-				name = "Alex",
-				favoriteSports = listOf("Bike", "Ping Pong"),
-				profileImageUrl = "https://example.com/alex.jpg",
-			),
-		)
-
+	fun `createProfile returns HTTP 201 with normalized persisted profile`() {
 		mockMvc
 			.post("/profiles") {
 				contentType = MediaType.APPLICATION_JSON
 				content = """
 					{
-					  "name": "Alex",
-					  "favoriteSports": ["Bike", "Ping Pong"],
-					  "profileImageUrl": "https://example.com/alex.jpg"
+					  "name": " Alex ",
+					  "favoriteSports": ["Bike", " Ping Pong "],
+					  "profileImageUrl": " https://example.com/alex.jpg "
 					}
 				""".trimIndent()
 			}.andExpect {
@@ -53,14 +34,6 @@ class ProfileControllerTest {
 				jsonPath("$.favoriteSports[1]") { value("Ping Pong") }
 				jsonPath("$.profileImageUrl") { value("https://example.com/alex.jpg") }
 			}
-
-		verify(profileService).createProfile(
-			CreateProfileRequest(
-				name = "Alex",
-				favoriteSports = listOf("Bike", "Ping Pong"),
-				profileImageUrl = "https://example.com/alex.jpg",
-			),
-		)
 	}
 
 	@Test
@@ -78,8 +51,6 @@ class ProfileControllerTest {
 			}.andExpect {
 				status { isBadRequest() }
 			}
-
-		verify(profileService, never()).createProfile(any())
 	}
 
 	@Test
@@ -97,8 +68,6 @@ class ProfileControllerTest {
 			}.andExpect {
 				status { isBadRequest() }
 			}
-
-		verify(profileService, never()).createProfile(any())
 	}
 
 	@Test
@@ -116,7 +85,5 @@ class ProfileControllerTest {
 			}.andExpect {
 				status { isBadRequest() }
 			}
-
-		verify(profileService, never()).createProfile(any())
 	}
 }
