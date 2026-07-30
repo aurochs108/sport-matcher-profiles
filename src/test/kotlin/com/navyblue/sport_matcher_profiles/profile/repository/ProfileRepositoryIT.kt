@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
-class ProfileRepositoryTest(
+class ProfileRepositoryIT(
 	@Autowired private val repository: ProfileRepository,
 	@Autowired private val entityManager: EntityManager,
 ) : PostgresContainerSupport() {
