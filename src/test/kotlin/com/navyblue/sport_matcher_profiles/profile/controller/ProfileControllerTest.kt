@@ -122,6 +122,27 @@ class ProfileControllerTest {
 	}
 
 	@Test
+	fun `createProfile returns HTTP 400 when profile image URL exceeds maximum length`() {
+		val profileImageUrl = "https://example.com/" + "a".repeat(2048)
+
+		mockMvc
+			.post("/profiles") {
+				contentType = MediaType.APPLICATION_JSON
+				content = """
+					{
+					  "name": "Alex",
+					  "favoriteSports": ["Bike"],
+					  "profileImageUrl": "$profileImageUrl"
+					}
+				""".trimIndent()
+			}.andExpect {
+				status { isBadRequest() }
+			}
+
+		verify(profileService, never()).createProfile(any())
+	}
+
+	@Test
 	fun `createProfile returns HTTP 400 when profile image URL is blank`() {
 		mockMvc
 			.post("/profiles") {

@@ -4,7 +4,7 @@
 create table profiles (
     id uuid primary key,
     name varchar(255) not null,
-    profile_image_url varchar(255) not null
+    profile_image_url varchar(2048) not null
 );
 
 create table profile_favorite_sports (

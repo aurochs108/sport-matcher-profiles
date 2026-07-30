@@ -27,6 +27,6 @@ class Profile(
 	@Enumerated(EnumType.STRING)
 	@Column(name = "favorite_sport", nullable = false)
 	val favoriteSports: Set<FavoriteSport>,
-	@Column(name = "profile_image_url", nullable = false)
+	@Column(name = "profile_image_url", nullable = false, length = 2048)
 	val profileImageUrl: String,
 )
