@@ -9,9 +9,8 @@ create table profiles (
 
 create table profile_favorite_sports (
     profile_id uuid not null,
-    position integer not null,
     favorite_sport varchar(255) not null,
-    primary key (profile_id, position),
+    primary key (profile_id, favorite_sport),
     constraint fk_profile_favorite_sports_profile
         foreign key (profile_id) references profiles(id)
         on delete cascade
