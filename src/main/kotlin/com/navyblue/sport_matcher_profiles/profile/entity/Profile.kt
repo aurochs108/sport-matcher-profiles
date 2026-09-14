@@ -29,4 +29,10 @@ class Profile(
 	val favoriteSports: Set<FavoriteSport>,
 	@Column(name = "profile_image_url", nullable = false, length = 2048)
 	val profileImageUrl: String,
-)
+) {
+	protected constructor() : this(
+		name = "",
+		favoriteSports = mutableSetOf(),
+		profileImageUrl = "",
+	)
+}
