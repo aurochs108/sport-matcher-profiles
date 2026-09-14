@@ -2,6 +2,8 @@ package com.navyblue.sport_matcher_profiles.notification.service
 
 import com.navyblue.sport_matcher_profiles.notification.dto.NotificationResponse
 import com.navyblue.sport_matcher_profiles.notification.dto.NotificationsResponse
+import com.navyblue.sport_matcher_profiles.notification.dto.CreateNotificationRequest
+import com.navyblue.sport_matcher_profiles.notification.entity.Notification
 import com.navyblue.sport_matcher_profiles.notification.repository.NotificationRepository
 import com.navyblue.sport_matcher_profiles.profile.repository.ProfileRepository
 import org.springframework.data.domain.PageRequest
@@ -18,6 +20,28 @@ class NotificationService(
 	private val profileRepository: ProfileRepository,
 	private val notificationRepository: NotificationRepository,
 ) {
+	fun createNotification(profileId: UUID, request: CreateNotificationRequest): NotificationResponse {
+		val profile = profileRepository.findById(profileId)
+			.orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found") }
+		val notification = notificationRepository.save(
+			Notification(
+				id = UUID.randomUUID().toString(),
+				profile = profile,
+				title = request.title.trim(),
+				message = request.message.trim(),
+				read = false,
+				createdAt = Instant.now(),
+			),
+		)
+		return NotificationResponse(
+			notification.id,
+			notification.title,
+			notification.message,
+			notification.read,
+			notification.createdAt,
+		)
+	}
+
 	fun getNotifications(profileId: UUID, limit: Int, cursor: String?): NotificationsResponse {
 		if (!profileRepository.existsById(profileId)) {
 			throw ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found")

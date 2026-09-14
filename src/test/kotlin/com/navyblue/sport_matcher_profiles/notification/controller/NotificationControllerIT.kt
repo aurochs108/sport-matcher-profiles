@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.post
 import java.time.Instant
 import java.util.UUID
 
@@ -22,6 +24,51 @@ class NotificationControllerIT(
 	@Autowired private val profileRepository: ProfileRepository,
 	@Autowired private val notificationRepository: NotificationRepository,
 ) : PostgresContainerSupport() {
+	@Test
+	fun `creates an unread notification for an existing profile`() {
+		val profile = profileRepository.save(Profile(name = "Alex", favoriteSports = setOf(FavoriteSport.BIKE), profileImageUrl = "image"))
+
+		mockMvc.post("/profiles/${profile.id}/notifications") {
+			contentType = MediaType.APPLICATION_JSON
+			content = """{"title":" New message ","message":" You have received a new message. "}"""
+		}.andExpect {
+			status { isCreated() }
+			jsonPath("$.id") { exists() }
+			jsonPath("$.title") { value("New message") }
+			jsonPath("$.message") { value("You have received a new message.") }
+			jsonPath("$.read") { value(false) }
+			jsonPath("$.createdAt") { exists() }
+		}
+
+		mockMvc.get("/profiles/${profile.id}/notifications").andExpect {
+			status { isOk() }
+			jsonPath("$.notifications.length()") { value(1) }
+			jsonPath("$.notifications[0].title") { value("New message") }
+		}
+	}
+
+	@Test
+	fun `rejects blank notification content`() {
+		val profile = profileRepository.save(Profile(name = "Alex", favoriteSports = setOf(FavoriteSport.BIKE), profileImageUrl = "image"))
+
+		mockMvc.post("/profiles/${profile.id}/notifications") {
+			contentType = MediaType.APPLICATION_JSON
+			content = """{"title":" ","message":""}"""
+		}.andExpect {
+			status { isBadRequest() }
+		}
+	}
+
+	@Test
+	fun `returns 404 when creating for an unknown profile`() {
+		mockMvc.post("/profiles/${UUID.randomUUID()}/notifications") {
+			contentType = MediaType.APPLICATION_JSON
+			content = """{"title":"New message","message":"Content"}"""
+		}.andExpect {
+			status { isNotFound() }
+		}
+	}
+
 	@Test
 	fun `returns notifications newest first with cursor pagination`() {
 		val profile = profileRepository.save(Profile(name = "Alex", favoriteSports = setOf(FavoriteSport.BIKE), profileImageUrl = "image"))
