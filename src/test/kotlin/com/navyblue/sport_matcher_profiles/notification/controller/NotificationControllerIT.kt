@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.post
+import org.springframework.test.web.servlet.delete
 import java.time.Instant
 import java.util.UUID
 
@@ -101,5 +102,51 @@ class NotificationControllerIT(
 		mockMvc.get("/profiles/${UUID.randomUUID()}/notifications").andExpect {
 			status { isNotFound() }
 		}
+	}
+
+	@Test
+	fun `deletes a notification belonging to the profile`() {
+		val profile = profileRepository.save(Profile(name = "Alex", favoriteSports = setOf(FavoriteSport.BIKE), profileImageUrl = "image"))
+		val notificationId = UUID.randomUUID()
+		notificationRepository.save(Notification(notificationId.toString(), profile, "Title", "Message", false, Instant.now()))
+
+		mockMvc.delete("/profiles/${profile.id}/notifications/$notificationId").andExpect {
+			status { isNoContent() }
+		}
+
+		mockMvc.get("/profiles/${profile.id}/notifications").andExpect {
+			status { isOk() }
+			jsonPath("$.notifications.length()") { value(0) }
+		}
+	}
+
+	@Test
+	fun `returns 404 when deleting a missing notification`() {
+		val profile = profileRepository.save(Profile(name = "Alex", favoriteSports = setOf(FavoriteSport.BIKE), profileImageUrl = "image"))
+
+		mockMvc.delete("/profiles/${profile.id}/notifications/${UUID.randomUUID()}").andExpect {
+			status { isNotFound() }
+		}
+	}
+
+	@Test
+	fun `returns 404 when deleting for a missing profile`() {
+		mockMvc.delete("/profiles/${UUID.randomUUID()}/notifications/${UUID.randomUUID()}").andExpect {
+			status { isNotFound() }
+		}
+	}
+
+	@Test
+	fun `does not delete notification belonging to another profile`() {
+		val profile = profileRepository.save(Profile(name = "Alex", favoriteSports = setOf(FavoriteSport.BIKE), profileImageUrl = "image"))
+		val anotherProfile = profileRepository.save(Profile(name = "Sam", favoriteSports = setOf(FavoriteSport.RUNNING), profileImageUrl = "image"))
+		val notificationId = UUID.randomUUID()
+		notificationRepository.save(Notification(notificationId.toString(), anotherProfile, "Title", "Message", false, Instant.now()))
+
+		mockMvc.delete("/profiles/${profile.id}/notifications/$notificationId").andExpect {
+			status { isNotFound() }
+		}
+
+		assert(notificationRepository.existsById(notificationId.toString()))
 	}
 }

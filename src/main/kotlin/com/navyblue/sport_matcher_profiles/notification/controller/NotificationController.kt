@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -35,4 +36,13 @@ class NotificationController(private val notificationService: NotificationServic
 		@RequestParam(defaultValue = "20") @Min(1) @Max(100) limit: Int,
 		@RequestParam(required = false) cursor: String?,
 	): NotificationsResponse = notificationService.getNotifications(profileId, limit, cursor)
+
+	@DeleteMapping("/{notificationId}")
+	fun deleteNotification(
+		@PathVariable profileId: UUID,
+		@PathVariable notificationId: UUID,
+	): ResponseEntity<Void> {
+		notificationService.deleteNotification(profileId, notificationId)
+		return ResponseEntity.noContent().build()
+	}
 }

@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
+import org.springframework.transaction.annotation.Transactional
 import java.nio.charset.StandardCharsets
 import java.time.Instant
 import java.util.Base64
@@ -46,6 +47,7 @@ class NotificationService(
 		if (!profileRepository.existsById(profileId)) {
 			throw ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found")
 		}
+
 		val pageable = PageRequest.of(0, limit + 1)
 		val notifications = cursor?.let {
 			val decodedCursor = decodeCursor(it)
@@ -59,6 +61,19 @@ class NotificationService(
 			notifications = page.map { NotificationResponse(it.id, it.title, it.message, it.read, it.createdAt) },
 			nextCursor = if (hasNextPage) encodeCursor(page.last().createdAt, page.last().id) else null,
 		)
+	}
+
+	@Transactional
+	fun deleteNotification(profileId: UUID, notificationId: UUID) {
+		if (!profileRepository.existsById(profileId)) {
+			throw ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found")
+		}
+		val notification = notificationRepository.findById(notificationId.toString())
+			.orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Notification not found") }
+		if (notification.profile.id != profileId) {
+			throw ResponseStatusException(HttpStatus.NOT_FOUND, "Notification not found")
+		}
+		notificationRepository.delete(notification)
 	}
 
 	private fun encodeCursor(createdAt: Instant, id: String): String =
